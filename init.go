@@ -41,3 +41,7 @@ func AddOutput(write io.Writer) {
 func Sync() {
 	std.Sync()
 }
+
+func Clone() *Logger {
+	return std.Clone()
+}

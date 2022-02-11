@@ -25,6 +25,13 @@ func newLogger() *Logger {
 	}
 }
 
+func (p *Logger) Clone() *Logger {
+	return &Logger{
+		level:   p.level,
+		outList: p.outList,
+	}
+}
+
 func (p *Logger) SetLevel(level Level) {
 	p.level = level
 }
