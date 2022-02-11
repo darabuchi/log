@@ -1,0 +1,2 @@
+# log
+logging in go
