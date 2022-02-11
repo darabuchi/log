@@ -1,0 +1,18 @@
+package test
+
+import (
+	"github.com/darabuchi/log"
+	"testing"
+)
+
+func TestLog(t *testing.T) {
+	//fs , _, err := zap.Open("./out.log")
+	//if err != nil {
+	//    log.Errorf("err:%v", err)
+	//    return
+	//}
+
+	log.Info("msg")
+	log.Infof("msgf")
+	log.Infof("%d", 1)
+}
