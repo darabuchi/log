@@ -19,7 +19,7 @@ func init() {
 }
 
 func New() *Logger {
-	return std
+	return newLogger()
 }
 
 func SetOutput(write io.Writer) {
