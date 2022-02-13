@@ -19,8 +19,8 @@ type Formatter struct {
 func (p *Formatter) Format(entry Entry) []byte {
 	var b bytes.Buffer
 
-	if p.Module != "" {
-		b.WriteString(p.Module)
+	if entry.PrefixMsg != "" {
+		b.WriteString(entry.PrefixMsg)
 		b.WriteString(" ")
 	}
 
@@ -45,6 +45,11 @@ func (p *Formatter) Format(entry Entry) []byte {
 	b.WriteString(fmt.Sprintf("%d", entry.CallerLine))
 	b.WriteString(")")
 	b.WriteString(endColor)
+
+	if entry.SuffixMsg != "" {
+		b.WriteString(" ")
+		b.WriteString(entry.SuffixMsg)
+	}
 
 	b.WriteByte('\n')
 

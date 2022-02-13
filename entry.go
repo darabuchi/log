@@ -10,4 +10,7 @@ type Entry struct {
 	Message    string
 	CallerName string
 	CallerLine int
+
+	PrefixMsg string
+	SuffixMsg string
 }

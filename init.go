@@ -49,3 +49,11 @@ func Clone() *Logger {
 func SetCallerDepth(callerDepth int) {
 	std.SetCallerDepth(callerDepth)
 }
+
+func SetPrefixMsg(prefixMsg string) {
+	std.SetPrefixMsg(prefixMsg)
+}
+
+func SetSuffixMsg(suffixMsg string) {
+	std.SetSuffixMsg(suffixMsg)
+}

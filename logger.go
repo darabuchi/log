@@ -16,6 +16,9 @@ type Logger struct {
 	Format Format
 
 	callerDepth int
+
+	PrefixMsg string
+	SuffixMsg string
 }
 
 func newLogger() *Logger {
@@ -29,6 +32,14 @@ func newLogger() *Logger {
 
 func (p *Logger) SetCallerDepth(callerDepth int) {
 	p.callerDepth = callerDepth
+}
+
+func (p *Logger) SetPrefixMsg(prefixMsg string) {
+	p.PrefixMsg = prefixMsg
+}
+
+func (p *Logger) SetSuffixMsg(suffixMsg string) {
+	p.SuffixMsg = suffixMsg
 }
 
 func (p *Logger) Clone() *Logger {
@@ -78,6 +89,8 @@ func (p *Logger) log(level Level, msg string) {
 		Message:    msg,
 		CallerName: callerName,
 		CallerLine: callerLine,
+		SuffixMsg:  p.SuffixMsg,
+		PrefixMsg:  p.PrefixMsg,
 	}))
 }
 
