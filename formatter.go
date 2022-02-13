@@ -3,7 +3,6 @@ package log
 import (
 	"bytes"
 	"fmt"
-	"github.com/petermattis/goid"
 	"path"
 	"strings"
 )
@@ -24,7 +23,13 @@ func (p *Formatter) Format(entry Entry) []byte {
 		b.WriteString(" ")
 	}
 
-	b.WriteString(fmt.Sprintf("(%d.%d) ", pid, goid.Get()))
+	b.WriteString(fmt.Sprintf("(%d.%d) ", entry.Pid, entry.Gid))
+
+	if entry.TraceId != "" {
+		b.WriteString("<")
+		b.WriteString(entry.TraceId)
+		b.WriteString("> ")
+	}
 
 	b.WriteString(entry.Time.Format("2006-01-02 15:04:05.9999Z07:00"))
 

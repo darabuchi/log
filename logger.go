@@ -2,9 +2,12 @@ package log
 
 import (
 	"fmt"
+	"github.com/aofei/sandid"
+	"github.com/petermattis/goid"
 	"go.uber.org/zap/zapcore"
 	"os"
 	"runtime"
+	"sync"
 	"time"
 )
 
@@ -19,6 +22,10 @@ type Logger struct {
 
 	PrefixMsg string
 	SuffixMsg string
+
+	one sync.Once
+
+	traceMap sync.Map
 }
 
 func newLogger() *Logger {
@@ -74,24 +81,45 @@ func (p *Logger) log(level Level, msg string) {
 		return
 	}
 
-	now := time.Now()
-
-	var callerName string
-	pc, file, callerLine, ok := runtime.Caller(p.callerDepth)
-	if ok {
-		callerName = runtime.FuncForPC(pc).Name()
+	entry := Entry{
+		Pid:       pid,
+		Gid:       goid.Get(),
+		Time:      time.Now(),
+		Level:     level,
+		Message:   msg,
+		SuffixMsg: p.SuffixMsg,
+		PrefixMsg: p.PrefixMsg,
 	}
 
-	p.write(level, p.Format.Format(Entry{
-		Time:       now,
-		Level:      level,
-		File:       file,
-		Message:    msg,
-		CallerName: callerName,
-		CallerLine: callerLine,
-		SuffixMsg:  p.SuffixMsg,
-		PrefixMsg:  p.PrefixMsg,
-	}))
+	entry.TraceId = p.GetTrace(entry.Gid)
+
+	var pc uintptr
+	var ok bool
+	pc, entry.File, entry.CallerLine, ok = runtime.Caller(p.callerDepth)
+	if ok {
+		entry.CallerName = runtime.FuncForPC(pc).Name()
+	}
+
+	p.write(level, p.Format.Format(entry))
+}
+
+func (p *Logger) GetTrace(gid int64) string {
+	tid, ok := p.traceMap.Load(gid)
+	if !ok {
+		return ""
+	}
+	return tid.(string)
+}
+
+func (p *Logger) SetTrace(gid int64, traceId string) {
+	if traceId == "" {
+		traceId = sandid.New().String()
+	}
+	p.traceMap.Store(gid, traceId)
+}
+
+func (p *Logger) DelTrace(gid int64) {
+	p.traceMap.Delete(gid)
 }
 
 func (p *Logger) write(level Level, buf []byte) {

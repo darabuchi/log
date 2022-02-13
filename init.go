@@ -1,6 +1,7 @@
 package log
 
 import (
+	"github.com/petermattis/goid"
 	"go.uber.org/zap/zapcore"
 	"io"
 	"os"
@@ -56,4 +57,16 @@ func SetPrefixMsg(prefixMsg string) {
 
 func SetSuffixMsg(suffixMsg string) {
 	std.SetSuffixMsg(suffixMsg)
+}
+
+func GetTrace() string {
+	return std.GetTrace(goid.Get())
+}
+
+func SetTrace(traceId string) {
+	std.SetTrace(goid.Get(), traceId)
+}
+
+func DelTrace() {
+	std.DelTrace(goid.Get())
 }

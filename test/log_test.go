@@ -12,6 +12,7 @@ func TestLog(t *testing.T) {
 	//    return
 	//}
 
+	log.SetTrace("")
 	log.Info("msg")
 	log.Infof("msgf")
 	log.Infof("%d", 1)
