@@ -26,9 +26,11 @@ func (p *Formatter) Format(entry Entry) []byte {
 	b.WriteString(fmt.Sprintf("(%d.%d) ", entry.Pid, entry.Gid))
 
 	if entry.TraceId != "" {
+		b.WriteString(colorCyan)
 		b.WriteString("<")
 		b.WriteString(entry.TraceId)
 		b.WriteString("> ")
+		b.WriteString(colorEnd)
 	}
 
 	b.WriteString(entry.Time.Format("2006-01-02 15:04:05.9999Z07:00"))
@@ -39,7 +41,7 @@ func (p *Formatter) Format(entry Entry) []byte {
 	b.WriteString(" [")
 	b.WriteString(entry.Level.String()[:4])
 	b.WriteString("] ")
-	b.WriteString(endColor)
+	b.WriteString(colorEnd)
 
 	b.WriteString(strings.TrimSpace(entry.Message))
 
@@ -49,7 +51,7 @@ func (p *Formatter) Format(entry Entry) []byte {
 	b.WriteString(":")
 	b.WriteString(fmt.Sprintf("%d", entry.CallerLine))
 	b.WriteString(")")
-	b.WriteString(endColor)
+	b.WriteString(colorEnd)
 
 	if entry.SuffixMsg != "" {
 		b.WriteString(" ")
@@ -71,10 +73,8 @@ const (
 	colorCyan    = "\u001B[36m"
 	colorGray    = "\u001B[37m"
 	colorWhite   = "\u001B[38m"
-)
 
-const (
-	endColor = "\u001B[0m"
+	colorEnd = "\u001B[0m"
 )
 
 func getColorByLevel(level Level) string {
