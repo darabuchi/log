@@ -45,3 +45,7 @@ func Sync() {
 func Clone() *Logger {
 	return std.Clone()
 }
+
+func SetCallerDepth(callerDepth int) {
+	std.SetCallerDepth(callerDepth)
+}

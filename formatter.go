@@ -1,11 +1,54 @@
 package log
 
 import (
+	"bytes"
+	"fmt"
+	"github.com/petermattis/goid"
+	"path"
 	"strings"
 )
 
+type Format interface {
+	Format(entry Entry) []byte
+}
+
 type Formatter struct {
-	module string
+	Module string
+}
+
+func (p *Formatter) Format(entry Entry) []byte {
+	var b bytes.Buffer
+
+	if p.Module != "" {
+		b.WriteString(p.Module)
+		b.WriteString(" ")
+	}
+
+	b.WriteString(fmt.Sprintf("(%d.%d) ", pid, goid.Get()))
+
+	b.WriteString(entry.Time.Format("2006-01-02 15:04:05.9999Z07:00"))
+
+	color := getColorByLevel(Level(entry.Level))
+
+	b.WriteString(color)
+	b.WriteString(" [")
+	b.WriteString(entry.Level.String()[:4])
+	b.WriteString("] ")
+	b.WriteString(endColor)
+
+	b.WriteString(strings.TrimSpace(entry.Message))
+
+	b.WriteString(color)
+	b.WriteString(" (")
+	b.WriteString(path.Join(getPackageName(entry.CallerName), path.Base(entry.File)))
+	b.WriteString(":")
+	b.WriteString(fmt.Sprintf("%d", entry.CallerLine))
+	b.WriteString(")")
+	b.WriteString(endColor)
+
+	b.WriteByte('\n')
+
+	return b.Bytes()
 }
 
 const (

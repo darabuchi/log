@@ -1,14 +1,10 @@
 package log
 
 import (
-	"bytes"
 	"fmt"
-	"github.com/petermattis/goid"
 	"go.uber.org/zap/zapcore"
 	"os"
-	"path"
 	"runtime"
-	"strings"
 	"time"
 )
 
@@ -16,13 +12,23 @@ type Logger struct {
 	level Level
 
 	outList []zapcore.WriteSyncer
+
+	Format Format
+
+	callerDepth int
 }
 
 func newLogger() *Logger {
 	return &Logger{
-		level:   DebugLevel,
-		outList: []zapcore.WriteSyncer{os.Stdout},
+		level:       DebugLevel,
+		outList:     []zapcore.WriteSyncer{os.Stdout},
+		Format:      &Formatter{},
+		callerDepth: 4,
 	}
+}
+
+func (p *Logger) SetCallerDepth(callerDepth int) {
+	p.callerDepth = callerDepth
 }
 
 func (p *Logger) Clone() *Logger {
@@ -57,38 +63,22 @@ func (p *Logger) log(level Level, msg string) {
 		return
 	}
 
-	var b bytes.Buffer
-	b.WriteString(fmt.Sprintf("(%d.%d) ", pid, goid.Get()))
-
-	b.WriteString(time.Now().Format("2006-01-02 15:04:05.9999Z07:00"))
-
-	color := getColorByLevel(level)
-
-	b.WriteString(color)
-	b.WriteString(" [")
-	b.WriteString(level.String()[:4])
-	b.WriteString("] ")
-	b.WriteString(endColor)
-
-	b.WriteString(strings.TrimSpace(msg))
+	now := time.Now()
 
 	var callerName string
-	pc, file, callerLine, ok := runtime.Caller(4)
+	pc, file, callerLine, ok := runtime.Caller(p.callerDepth)
 	if ok {
 		callerName = runtime.FuncForPC(pc).Name()
 	}
 
-	b.WriteString(color)
-	b.WriteString(" (")
-	b.WriteString(path.Join(getPackageName(callerName), path.Base(file)))
-	b.WriteString(":")
-	b.WriteString(fmt.Sprintf("%d", callerLine))
-	b.WriteString(")")
-	b.WriteString(endColor)
-
-	b.WriteByte('\n')
-
-	p.write(level, b.Bytes())
+	p.write(level, p.Format.Format(Entry{
+		Time:       now,
+		Level:      level,
+		File:       file,
+		Message:    msg,
+		CallerName: callerName,
+		CallerLine: callerLine,
+	}))
 }
 
 func (p *Logger) write(level Level, buf []byte) {
