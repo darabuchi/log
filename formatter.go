@@ -39,7 +39,7 @@ func (p *Formatter) Format(entry Entry) []byte {
 
 	b.WriteString(color)
 	b.WriteString(" [")
-	b.WriteString(entry.Level.String()[:4])
+	b.WriteString(entry.Level.String())
 	b.WriteString("] ")
 	b.WriteString(colorEnd)
 
