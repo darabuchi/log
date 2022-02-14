@@ -7,7 +7,6 @@ import (
 	"io"
 	"os"
 	"runtime"
-	"sync"
 	"time"
 )
 
@@ -22,8 +21,6 @@ type Logger struct {
 
 	PrefixMsg string
 	SuffixMsg string
-
-	one sync.Once
 }
 
 func newLogger() *Logger {
@@ -52,8 +49,12 @@ func (p *Logger) SetSuffixMsg(suffixMsg string) *Logger {
 
 func (p *Logger) Clone() *Logger {
 	return &Logger{
-		level:   p.level,
-		outList: p.outList,
+		level:       p.level,
+		outList:     p.outList,
+		Format:      p.Format,
+		callerDepth: p.callerDepth,
+		PrefixMsg:   p.PrefixMsg,
+		SuffixMsg:   p.SuffixMsg,
 	}
 }
 
