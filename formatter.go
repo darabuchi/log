@@ -25,14 +25,6 @@ func (p *Formatter) Format(entry Entry) []byte {
 
 	b.WriteString(fmt.Sprintf("(%d.%d) ", entry.Pid, entry.Gid))
 
-	if entry.TraceId != "" {
-		b.WriteString(colorCyan)
-		b.WriteString("<")
-		b.WriteString(entry.TraceId)
-		b.WriteString("> ")
-		b.WriteString(colorEnd)
-	}
-
 	b.WriteString(entry.Time.Format("2006-01-02 15:04:05.9999Z07:00"))
 
 	color := getColorByLevel(Level(entry.Level))
@@ -52,6 +44,14 @@ func (p *Formatter) Format(entry Entry) []byte {
 	b.WriteString(fmt.Sprintf("%d", entry.CallerLine))
 	b.WriteString(")")
 	b.WriteString(colorEnd)
+
+	if entry.TraceId != "" {
+		b.WriteString(colorCyan)
+		b.WriteString("<")
+		b.WriteString(entry.TraceId)
+		b.WriteString("> ")
+		b.WriteString(colorEnd)
+	}
 
 	if entry.SuffixMsg != "" {
 		b.WriteString(" ")
