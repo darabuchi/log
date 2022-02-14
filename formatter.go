@@ -42,7 +42,7 @@ func (p *Formatter) Format(entry Entry) []byte {
 	b.WriteString(path.Join(getPackageName(entry.CallerName), path.Base(entry.File)))
 	b.WriteString(":")
 	b.WriteString(fmt.Sprintf("%d", entry.CallerLine))
-	b.WriteString(")")
+	b.WriteString(") ")
 	b.WriteString(colorEnd)
 
 	if entry.TraceId != "" {
@@ -54,7 +54,6 @@ func (p *Formatter) Format(entry Entry) []byte {
 	}
 
 	if entry.SuffixMsg != "" {
-		b.WriteString(" ")
 		b.WriteString(entry.SuffixMsg)
 	}
 
