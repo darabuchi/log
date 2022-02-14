@@ -2,7 +2,6 @@ package log
 
 import (
 	"fmt"
-	"github.com/aofei/sandid"
 	"github.com/petermattis/goid"
 	"go.uber.org/zap/zapcore"
 	"os"
@@ -24,8 +23,6 @@ type Logger struct {
 	SuffixMsg string
 
 	one sync.Once
-
-	traceMap sync.Map
 }
 
 func newLogger() *Logger {
@@ -91,7 +88,7 @@ func (p *Logger) log(level Level, msg string) {
 		PrefixMsg: p.PrefixMsg,
 	}
 
-	entry.TraceId = p.GetTrace(entry.Gid)
+	entry.TraceId = getTrace(entry.Gid)
 
 	var pc uintptr
 	var ok bool
@@ -101,25 +98,6 @@ func (p *Logger) log(level Level, msg string) {
 	}
 
 	p.write(level, p.Format.Format(entry))
-}
-
-func (p *Logger) GetTrace(gid int64) string {
-	tid, ok := p.traceMap.Load(gid)
-	if !ok {
-		return ""
-	}
-	return tid.(string)
-}
-
-func (p *Logger) SetTrace(gid int64, traceId string) {
-	if traceId == "" {
-		traceId = sandid.New().String()
-	}
-	p.traceMap.Store(gid, traceId)
-}
-
-func (p *Logger) DelTrace(gid int64) {
-	p.traceMap.Delete(gid)
 }
 
 func (p *Logger) write(level Level, buf []byte) {

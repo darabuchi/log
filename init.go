@@ -60,13 +60,13 @@ func SetSuffixMsg(suffixMsg string) {
 }
 
 func GetTrace() string {
-	return std.GetTrace(goid.Get())
+	return getTrace(goid.Get())
 }
 
 func SetTrace(traceId string) {
-	std.SetTrace(goid.Get(), traceId)
+	setTrace(goid.Get(), traceId)
 }
 
 func DelTrace() {
-	std.DelTrace(goid.Get())
+	delTrace(goid.Get())
 }
