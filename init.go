@@ -1,8 +1,6 @@
 package log
 
 import (
-	"github.com/petermattis/goid"
-	"go.uber.org/zap/zapcore"
 	"io"
 	"os"
 )
@@ -23,20 +21,16 @@ func New() *Logger {
 	return newLogger()
 }
 
-func SetOutput(write io.Writer) {
-	std.SetOutput(zapcore.AddSync(write))
+func SetOutput(writes ...io.Writer) *Logger {
+	return std.SetOutput(writes...)
 }
 
-func SetLevel(level Level) {
-	std.SetLevel(level)
+func AddOutput(writes ...io.Writer) *Logger {
+	return std.AddOutput(writes...)
 }
 
-//func SetModule(module string) {
-//	logFmt.SetModule(module)
-//}
-
-func AddOutput(write io.Writer) {
-	std.AddOutput(zapcore.AddSync(write))
+func SetLevel(level Level) *Logger {
+	return std.SetLevel(level)
 }
 
 func Sync() {
@@ -47,26 +41,14 @@ func Clone() *Logger {
 	return std.Clone()
 }
 
-func SetCallerDepth(callerDepth int) {
-	std.SetCallerDepth(callerDepth)
+func SetCallerDepth(callerDepth int) *Logger {
+	return std.SetCallerDepth(callerDepth)
 }
 
-func SetPrefixMsg(prefixMsg string) {
-	std.SetPrefixMsg(prefixMsg)
+func SetPrefixMsg(prefixMsg string) *Logger {
+	return std.SetPrefixMsg(prefixMsg)
 }
 
-func SetSuffixMsg(suffixMsg string) {
-	std.SetSuffixMsg(suffixMsg)
-}
-
-func GetTrace() string {
-	return getTrace(goid.Get())
-}
-
-func SetTrace(traceId string) {
-	setTrace(goid.Get(), traceId)
-}
-
-func DelTrace() {
-	delTrace(goid.Get())
+func SetSuffixMsg(suffixMsg string) *Logger {
+	return std.SetSuffixMsg(suffixMsg)
 }

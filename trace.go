@@ -2,6 +2,7 @@ package log
 
 import (
 	"github.com/aofei/sandid"
+	"github.com/petermattis/goid"
 	"sync"
 )
 
@@ -24,4 +25,16 @@ func setTrace(gid int64, traceId string) {
 
 func delTrace(gid int64) {
 	traceMap.Delete(gid)
+}
+
+func GetTrace() string {
+	return getTrace(goid.Get())
+}
+
+func SetTrace(traceId string) {
+	setTrace(goid.Get(), traceId)
+}
+
+func DelTrace() {
+	delTrace(goid.Get())
 }

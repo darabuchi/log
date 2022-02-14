@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/petermattis/goid"
 	"go.uber.org/zap/zapcore"
+	"io"
 	"os"
 	"runtime"
 	"sync"
@@ -34,16 +35,19 @@ func newLogger() *Logger {
 	}
 }
 
-func (p *Logger) SetCallerDepth(callerDepth int) {
+func (p *Logger) SetCallerDepth(callerDepth int) *Logger {
 	p.callerDepth = callerDepth
+	return p
 }
 
-func (p *Logger) SetPrefixMsg(prefixMsg string) {
+func (p *Logger) SetPrefixMsg(prefixMsg string) *Logger {
 	p.PrefixMsg = prefixMsg
+	return p
 }
 
-func (p *Logger) SetSuffixMsg(suffixMsg string) {
+func (p *Logger) SetSuffixMsg(suffixMsg string) *Logger {
 	p.SuffixMsg = suffixMsg
+	return p
 }
 
 func (p *Logger) Clone() *Logger {
@@ -53,16 +57,25 @@ func (p *Logger) Clone() *Logger {
 	}
 }
 
-func (p *Logger) SetLevel(level Level) {
+func (p *Logger) SetLevel(level Level) *Logger {
 	p.level = level
+	return p
 }
 
-func (p *Logger) SetOutput(write zapcore.WriteSyncer) {
-	p.outList = []zapcore.WriteSyncer{write}
+func (p *Logger) SetOutput(writes ...io.Writer) *Logger {
+	var ws []zapcore.WriteSyncer
+	for _, write := range writes {
+		ws = append(ws, zapcore.AddSync(write))
+	}
+	p.outList = ws
+	return p
 }
 
-func (p *Logger) AddOutput(write zapcore.WriteSyncer) {
-	p.outList = append(p.outList, write)
+func (p *Logger) AddOutput(writes ...io.Writer) *Logger {
+	for _, write := range writes {
+		p.outList = append(p.outList, zapcore.AddSync(write))
+	}
+	return p
 }
 
 func (p *Logger) Log(level Level, args ...interface{}) {
