@@ -27,7 +27,7 @@ func (p *Formatter) Format(entry Entry) []byte {
 
 	b.WriteString(entry.Time.Format("2006-01-02 15:04:05.9999Z07:00"))
 
-	color := getColorByLevel(Level(entry.Level))
+	color := getColorByLevel(entry.Level)
 
 	b.WriteString(color)
 	b.WriteString(" [")
