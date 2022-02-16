@@ -93,14 +93,10 @@ func getColorByLevel(level Level) string {
 }
 
 func getPackageName(f string) string {
-	for {
-		lastPeriod := strings.LastIndex(f, ".")
-		lastSlash := strings.LastIndex(f, "/")
-		if lastPeriod > lastSlash {
-			f = f[:lastPeriod]
-		} else {
-			break
-		}
+	slashIndex := strings.LastIndex(f, "/")
+	if slashIndex > 0 {
+		idx := strings.Index(f[slashIndex:], ".") + slashIndex
+		return f[:idx]
 	}
 
 	return f
