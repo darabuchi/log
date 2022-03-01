@@ -196,3 +196,23 @@ func (p *Logger) Sync() {
 		_ = out.Sync()
 	}
 }
+
+func (p *Logger) ParsingAndEscaping(disable bool) *Logger {
+	switch f := p.Format.(type) {
+	case FormatFull:
+		f.ParsingAndEscaping(disable)
+	default:
+		Panicf("%v is not interface log.FormatFull", f)
+	}
+	return p
+}
+
+func (p *Logger) Caller(disable bool) *Logger {
+	switch f := p.Format.(type) {
+	case FormatFull:
+		f.Caller(disable)
+	default:
+		Panicf("%v is not interface log.FormatFull", f)
+	}
+	return p
+}

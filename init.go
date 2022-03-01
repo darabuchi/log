@@ -43,3 +43,11 @@ func SetPrefixMsg(prefixMsg string) *Logger {
 func SetSuffixMsg(suffixMsg string) *Logger {
 	return std.SetSuffixMsg(suffixMsg)
 }
+
+func ParsingAndEscaping(disable bool) *Logger {
+	return std.ParsingAndEscaping(disable)
+}
+
+func Caller(disable bool) *Logger {
+	return std.Caller(disable)
+}

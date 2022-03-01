@@ -11,11 +11,23 @@ type Format interface {
 	Format(entry Entry) []byte
 }
 
-type Formatter struct {
-	Module string
+type FormatFull interface {
+	Format
+	// ParsingAndEscaping Default should be on
+	ParsingAndEscaping(disable bool)
+
+	// DisableCaller Default should be on
+	Caller(disable bool)
 }
 
-func (p *Formatter) Format(entry Entry) []byte {
+type Formatter struct {
+	Module string
+
+	DisableParsingAndEscaping bool
+	DisableCaller             bool
+}
+
+func (p *Formatter) format(entry Entry) []byte {
 	var b bytes.Buffer
 
 	if entry.PrefixMsg != "" {
@@ -37,13 +49,15 @@ func (p *Formatter) Format(entry Entry) []byte {
 
 	b.WriteString(strings.TrimSpace(entry.Message))
 
-	b.WriteString(color)
-	b.WriteString(" ( ")
-	b.WriteString(path.Join(getPackageName(entry.CallerName), path.Base(entry.File)))
-	b.WriteString(":")
-	b.WriteString(fmt.Sprintf("%d", entry.CallerLine))
-	b.WriteString(" ) ")
-	b.WriteString(colorEnd)
+	if !p.DisableCaller {
+		b.WriteString(color)
+		b.WriteString(" ( ")
+		b.WriteString(path.Join(getPackageName(entry.CallerName), path.Base(entry.File)))
+		b.WriteString(":")
+		b.WriteString(fmt.Sprintf("%d", entry.CallerLine))
+		b.WriteString(" ) ")
+		b.WriteString(colorEnd)
+	}
 
 	if entry.TraceId != "" {
 		b.WriteString(colorCyan)
@@ -60,6 +74,30 @@ func (p *Formatter) Format(entry Entry) []byte {
 	b.WriteByte('\n')
 
 	return b.Bytes()
+}
+
+func (p *Formatter) Format(entry Entry) []byte {
+	if p.DisableParsingAndEscaping {
+		return p.format(entry)
+	}
+
+	var b bytes.Buffer
+	entry.Message = strings.ReplaceAll(entry.Message, "\t", "    ")
+
+	for _, msg := range strings.Split(entry.Message, "\n") {
+		entry.Message = msg
+		b.Write(p.format(entry))
+	}
+
+	return b.Bytes()
+}
+
+func (p *Formatter) ParsingAndEscaping(disable bool) {
+	p.DisableParsingAndEscaping = disable
+}
+
+func (p *Formatter) Caller(disable bool) {
+	p.DisableCaller = disable
 }
 
 const (
