@@ -38,11 +38,11 @@ func (p *Formatter) Format(entry Entry) []byte {
 	b.WriteString(strings.TrimSpace(entry.Message))
 
 	b.WriteString(color)
-	b.WriteString(" (")
+	b.WriteString(" ( ")
 	b.WriteString(path.Join(getPackageName(entry.CallerName), path.Base(entry.File)))
 	b.WriteString(":")
 	b.WriteString(fmt.Sprintf("%d", entry.CallerLine))
-	b.WriteString(") ")
+	b.WriteString(" ) ")
 	b.WriteString(colorEnd)
 
 	if entry.TraceId != "" {
