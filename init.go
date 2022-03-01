@@ -1,7 +1,6 @@
 package log
 
 import (
-	"io"
 	"os"
 )
 
@@ -19,14 +18,6 @@ func init() {
 
 func New() *Logger {
 	return newLogger()
-}
-
-func SetOutput(writes ...io.Writer) *Logger {
-	return std.SetOutput(writes...)
-}
-
-func AddOutput(writes ...io.Writer) *Logger {
-	return std.AddOutput(writes...)
 }
 
 func SetLevel(level Level) *Logger {
