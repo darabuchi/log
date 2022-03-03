@@ -56,12 +56,11 @@ func (p *Formatter) format(entry Entry) []byte {
 		b.WriteString(" [ ")
 
 		if !p.DisableCaller {
-			filePath, funcPath := SplitPackageName(entry.CallerName)
-			b.WriteString(path.Join(filePath, path.Base(entry.File)))
+			b.WriteString(path.Join(entry.CallerDir, path.Base(entry.File)))
 			b.WriteString(":")
 			b.WriteString(fmt.Sprintf("%d", entry.CallerLine))
 			b.WriteString(" ")
-			b.WriteString(funcPath)
+			b.WriteString(entry.CallerFunc)
 			b.WriteString(" ")
 		}
 

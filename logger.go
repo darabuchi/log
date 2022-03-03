@@ -119,6 +119,8 @@ func (p *Logger) log(level Level, msg string) {
 		entry.CallerName = runtime.FuncForPC(pc).Name()
 	}
 
+	entry.CallerDir, entry.CallerFunc = SplitPackageName(entry.CallerName)
+
 	p.write(level, p.Format.Format(entry))
 }
 
@@ -126,8 +128,13 @@ func (p *Logger) write(level Level, buf []byte) {
 	for _, out := range p.outList {
 		_, _ = out.Write(buf)
 	}
-	if level > ErrorLevel {
+
+	if level == PanicLevel {
 		p.Sync()
+		panic(buf)
+	} else if level == FatalLevel {
+		p.Sync()
+		os.Exit(0)
 	}
 }
 

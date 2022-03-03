@@ -14,6 +14,8 @@ type Entry struct {
 	Message    string
 	CallerName string
 	CallerLine int
+	CallerDir  string
+	CallerFunc string
 
 	PrefixMsg string
 	SuffixMsg string
