@@ -48,14 +48,22 @@ func (p *Logger) SetSuffixMsg(suffixMsg string) *Logger {
 }
 
 func (p *Logger) Clone() *Logger {
-	return &Logger{
+	l := Logger{
 		level:       p.level,
 		outList:     p.outList,
-		Format:      p.Format,
 		callerDepth: p.callerDepth,
 		PrefixMsg:   p.PrefixMsg,
 		SuffixMsg:   p.SuffixMsg,
 	}
+
+	switch f := p.Format.(type) {
+	case FormatFull:
+		l.Format = f.Clone()
+	default:
+		l.Format = f
+	}
+
+	return &l
 }
 
 func (p *Logger) SetLevel(level Level) *Logger {
@@ -215,4 +223,8 @@ func (p *Logger) Caller(disable bool) *Logger {
 		Panicf("%v is not interface log.FormatFull", f)
 	}
 	return p
+}
+
+func (p *Logger) StartMsg() {
+	Infof("========== start new log ==========")
 }

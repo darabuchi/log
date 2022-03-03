@@ -53,3 +53,7 @@ func Panicf(format string, args ...interface{}) {
 func Fatalf(format string, args ...interface{}) {
 	std.Fatalf(format, args...)
 }
+
+func StartMsg() {
+	std.StartMsg()
+}

@@ -16,4 +16,7 @@ func TestLog(t *testing.T) {
 	log.Info("msg")
 	log.Infof("msgf")
 	log.Infof("%d", 1)
+
+	log.Clone().Caller(true).Info("not caller")
+	log.Info("has caller")
 }

@@ -18,6 +18,8 @@ type FormatFull interface {
 
 	// DisableCaller Default should be on
 	Caller(disable bool)
+
+	Clone() Format
 }
 
 type Formatter struct {
@@ -49,21 +51,26 @@ func (p *Formatter) format(entry Entry) []byte {
 
 	b.WriteString(strings.TrimSpace(entry.Message))
 
-	if !p.DisableCaller {
-		b.WriteString(color)
-		b.WriteString(" ( ")
-		b.WriteString(path.Join(getPackageName(entry.CallerName), path.Base(entry.File)))
-		b.WriteString(":")
-		b.WriteString(fmt.Sprintf("%d", entry.CallerLine))
-		b.WriteString(" ) ")
-		b.WriteString(colorEnd)
-	}
-
-	if entry.TraceId != "" {
+	if !p.DisableCaller || entry.TraceId != "" {
 		b.WriteString(colorCyan)
-		b.WriteString("<")
-		b.WriteString(entry.TraceId)
-		b.WriteString("> ")
+		b.WriteString(" [ ")
+
+		if !p.DisableCaller {
+			filePath, funcPath := SplitPackageName(entry.CallerName)
+			b.WriteString(path.Join(filePath, path.Base(entry.File)))
+			b.WriteString(":")
+			b.WriteString(fmt.Sprintf("%d", entry.CallerLine))
+			b.WriteString(" ")
+			b.WriteString(funcPath)
+			b.WriteString(" ")
+		}
+
+		if entry.TraceId != "" {
+			b.WriteString(entry.TraceId)
+			b.WriteString(" ")
+		}
+
+		b.WriteString("]")
 		b.WriteString(colorEnd)
 	}
 
@@ -100,6 +107,14 @@ func (p *Formatter) Caller(disable bool) {
 	p.DisableCaller = disable
 }
 
+func (p *Formatter) Clone() Format {
+	return &Formatter{
+		Module:                    p.Module,
+		DisableParsingAndEscaping: p.DisableParsingAndEscaping,
+		DisableCaller:             p.DisableCaller,
+	}
+}
+
 const (
 	colorBlack   = "\u001B[30m"
 	colorRed     = "\u001B[31m"
@@ -130,12 +145,12 @@ func getColorByLevel(level Level) string {
 	}
 }
 
-func getPackageName(f string) string {
+func SplitPackageName(f string) (string, string) {
 	slashIndex := strings.LastIndex(f, "/")
 	if slashIndex > 0 {
 		idx := strings.Index(f[slashIndex:], ".") + slashIndex
-		return f[:idx]
+		return f[:idx], f[idx:]
 	}
 
-	return f
+	return f, ""
 }
