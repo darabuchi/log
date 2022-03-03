@@ -88,8 +88,6 @@ func (p *Formatter) Format(entry Entry) []byte {
 	}
 
 	var b bytes.Buffer
-	entry.Message = strings.ReplaceAll(entry.Message, "\t", "    ")
-
 	for _, msg := range strings.Split(entry.Message, "\n") {
 		entry.Message = msg
 		b.Write(p.format(entry))
