@@ -1,16 +1,17 @@
 package test
 
 import (
-	"github.com/darabuchi/log"
 	"testing"
+
+	"github.com/darabuchi/log"
 )
 
 func TestLog(t *testing.T) {
-	//fs , _, err := zap.Open("./out.log")
-	//if err != nil {
+	// fs , _, err := zap.Open("./out.log")
+	// if err != nil {
 	//    log.Errorf("err:%v", err)
 	//    return
-	//}
+	// }
 
 	log.SetTrace("")
 	log.Info("msg")

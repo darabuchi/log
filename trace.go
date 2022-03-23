@@ -1,9 +1,11 @@
 package log
 
 import (
+	"strings"
+	"sync"
+
 	"github.com/aofei/sandid"
 	"github.com/petermattis/goid"
-	"sync"
 )
 
 var traceMap sync.Map
@@ -18,7 +20,7 @@ func getTrace(gid int64) string {
 
 func setTrace(gid int64, traceId string) {
 	if traceId == "" {
-		traceId = sandid.New().String()
+		traceId = GenTraceId()
 	}
 	traceMap.Store(gid, traceId)
 }
@@ -37,4 +39,8 @@ func SetTrace(traceId string) {
 
 func DelTrace() {
 	delTrace(goid.Get())
+}
+
+func GenTraceId() string {
+	return strings.ReplaceAll(sandid.New().String(), "-", "")
 }
