@@ -39,7 +39,7 @@ func (p *Formatter) format(entry Entry) []byte {
 
 	b.WriteString(fmt.Sprintf("(%d.%d) ", entry.Pid, entry.Gid))
 
-	b.WriteString(entry.Time.Format("2006-01-02 15:04:05.9999Z07:00"))
+	b.WriteString(entry.Time.Format("2006-01-02 15:04:05.999Z07:00"))
 
 	color := getColorByLevel(entry.Level)
 
