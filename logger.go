@@ -2,12 +2,13 @@ package log
 
 import (
 	"fmt"
-	"github.com/petermattis/goid"
-	"go.uber.org/zap/zapcore"
 	"io"
 	"os"
 	"runtime"
 	"time"
+
+	"github.com/petermattis/goid"
+	"go.uber.org/zap/zapcore"
 )
 
 type Logger struct {
