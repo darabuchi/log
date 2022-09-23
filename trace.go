@@ -1,10 +1,9 @@
 package log
 
 import (
-	"strings"
 	"sync"
 
-	"github.com/aofei/sandid"
+	"github.com/nats-io/nuid"
 	"github.com/petermattis/goid"
 )
 
@@ -41,6 +40,8 @@ func DelTrace() {
 	delTrace(goid.Get())
 }
 
+var nid = nuid.New()
+
 func GenTraceId() string {
-	return strings.ReplaceAll(sandid.New().String(), "-", "")
+	return nid.Next()[16:]
 }

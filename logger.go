@@ -93,7 +93,7 @@ func (p *Logger) Log(level Level, args ...interface{}) {
 }
 
 func (p *Logger) Logf(level Level, format string, args ...interface{}) {
-	p.log(level, fmt.Sprintf(format, args))
+	p.log(level, fmt.Sprintf(format, args...))
 }
 
 func (p *Logger) log(level Level, msg string) {
