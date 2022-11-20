@@ -30,7 +30,7 @@ func GetOutputWriterHourly(filename string, max uint) io.Writer {
 
 	hook, err := rotatelogs.
 			New(filename+"%Y%m%d%H.log",
-				rotatelogs.WithLinkName(filename),
+				rotatelogs.WithLinkName(filename+".log"),
 				rotatelogs.WithRotationTime(time.Hour),
 				rotatelogs.WithRotationSize(100*1024*1024),
 				rotatelogs.WithRotationCount(max),
