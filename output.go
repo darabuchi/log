@@ -1,8 +1,10 @@
 package log
 
 import (
-	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"io"
+	"time"
+
+	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 )
 
 func SetOutput(writes ...io.Writer) *Logger {
@@ -18,5 +20,25 @@ func GetOutputWriter(filename string) io.Writer {
 	if err != nil {
 		std.Panicf("err:%v", err)
 	}
+	return hook
+}
+
+func GetOutputWriterHourly(filename string, max uint) io.Writer {
+	if max <= 0 {
+		max = 24
+	}
+
+	hook, err := rotatelogs.
+			New(filename+"%Y%m%d%H.log",
+				rotatelogs.WithLinkName(filename),
+				rotatelogs.WithRotationTime(time.Hour),
+				rotatelogs.WithRotationSize(100*1024*1024),
+				rotatelogs.WithRotationCount(max),
+				// rotatelogs.WithRotationTime(time.Minute*5),
+			)
+	if err != nil {
+		std.Panicf("err:%v", err)
+	}
+
 	return hook
 }
