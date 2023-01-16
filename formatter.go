@@ -1,7 +1,6 @@
 package log
 
 import (
-	"bytes"
 	"fmt"
 	"path"
 	"strings"
@@ -30,7 +29,8 @@ type Formatter struct {
 }
 
 func (p *Formatter) format(entry Entry) []byte {
-	var b bytes.Buffer
+	b := GetBuffer()
+	defer PutBuffer(b)
 
 	if entry.PrefixMsg != "" {
 		b.WriteString(entry.PrefixMsg)
@@ -87,7 +87,9 @@ func (p *Formatter) Format(entry Entry) []byte {
 		return p.format(entry)
 	}
 
-	var b bytes.Buffer
+	b := GetBuffer()
+	defer PutBuffer(b)
+
 	for _, msg := range strings.Split(entry.Message, "\n") {
 		entry.Message = msg
 		b.Write(p.format(entry))
