@@ -6,13 +6,9 @@ package log
 import "fmt"
 
 func Debug(args ...interface{}) {
-	if std.level > DebugLevel {
-		std.Debug(args...)
-	}
+	std.Debug(args...)
 }
 
 func Debugf(format string, args ...interface{}) {
-	if std.level > DebugLevel {
-		std.Debug(fmt.Sprintf(format, args...))
-	}
+	std.Debug(fmt.Sprintf(format, args...))
 }
