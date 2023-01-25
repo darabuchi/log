@@ -6,10 +6,6 @@ func Trace(args ...interface{}) {
 	std.Trace(args...)
 }
 
-func Debug(args ...interface{}) {
-	std.Debug(args...)
-}
-
 func Info(args ...interface{}) {
 	std.Info(args...)
 }
@@ -28,10 +24,6 @@ func Panic(args ...interface{}) {
 
 func Fatal(args ...interface{}) {
 	std.Fatal(args...)
-}
-
-func Debugf(format string, args ...interface{}) {
-	std.Debug(fmt.Sprintf(format, args...))
 }
 
 func Infof(format string, args ...interface{}) {
