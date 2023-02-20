@@ -18,7 +18,7 @@ func AddOutput(writes ...io.Writer) *Logger {
 }
 
 func GetOutputWriter(filename string) io.Writer {
-	if !isDir(filepath.Dir(filename)) {
+	if filepath.Dir(filename) != filename && !isDir(filepath.Dir(filename)) {
 		err := os.MkdirAll(filepath.Dir(filename), os.ModePerm)
 		if err != nil {
 			Errorf("err:%v", err)
@@ -43,6 +43,13 @@ func isDir(path string) bool {
 func GetOutputWriterHourly(filename string, max uint) io.Writer {
 	if max <= 0 {
 		max = 24
+	}
+
+	if filepath.Dir(filename) != filename && !isDir(filepath.Dir(filename)) {
+		err := os.MkdirAll(filepath.Dir(filename), os.ModePerm)
+		if err != nil {
+			Errorf("err:%v", err)
+		}
 	}
 
 	hook, err := rotatelogs.
