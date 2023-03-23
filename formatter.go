@@ -148,7 +148,12 @@ func SplitPackageName(f string) (string, string) {
 	slashIndex := strings.LastIndex(f, "/")
 	if slashIndex > 0 {
 		idx := strings.Index(f[slashIndex:], ".") + slashIndex
-		return f[:idx], f[idx:]
+		return f[:idx], f[idx+1:]
+	}
+
+	slashIndex = strings.Index(f, ".")
+	if slashIndex > 0 {
+		return f[:slashIndex], f[slashIndex+1:]
 	}
 
 	return f, ""

@@ -1,12 +1,12 @@
-package test
+package log_test
 
 import (
-	"testing"
-
 	"github.com/darabuchi/log"
+	"sync"
+	"testing"
 )
 
-func TestLog(t *testing.T) {
+func TestPrint(t *testing.T) {
 	// fs , _, err := zap.Open("./out.log")
 	// if err != nil {
 	//    log.Errorf("err:%v", err)
@@ -20,4 +20,13 @@ func TestLog(t *testing.T) {
 
 	log.Clone().Caller(true).Info("not caller")
 	log.Info("has caller")
+
+	var w sync.WaitGroup
+	w.Add(1)
+	go func() {
+		defer w.Done()
+		log.Info("go")
+	}()
+
+	w.Wait()
 }
