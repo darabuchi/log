@@ -1,9 +1,8 @@
-module
+module github.com/darabuchi/log
 
 go 1.17
 
 require (
-	github.com/aofei/sandid v1.2.0
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/nats-io/nuid v1.0.1
 	github.com/petermattis/goid v0.0.0-20230317030725-371a4b8eda08
